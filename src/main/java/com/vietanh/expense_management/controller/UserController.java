@@ -2,6 +2,7 @@ package com.vietanh.expense_management.controller;
 
 import com.vietanh.expense_management.dto.request.LoginDto;
 import com.vietanh.expense_management.dto.request.RegisterDto;
+import com.vietanh.expense_management.dto.response.TokenDto;
 import com.vietanh.expense_management.dto.response.UserDto;
 import com.vietanh.expense_management.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +26,16 @@ public class UserController {
             return ResponseEntity.badRequest().body("Please provide enough info");
         }
         String token = userService.register(registerDto);
-        return ResponseEntity.ok().body(token);
+        TokenDto tokenDto = new TokenDto(token);
+        return ResponseEntity.ok().body(tokenDto);
     }
 
     //login 
     @PostMapping(value = "login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         String token = userService.login(loginDto);
-        return ResponseEntity.ok().body(token);
+        TokenDto tokenDto = new TokenDto(token);
+        return ResponseEntity.ok().body(tokenDto);
     }
 
     //get my info

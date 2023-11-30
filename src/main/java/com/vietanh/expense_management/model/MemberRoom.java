@@ -22,11 +22,18 @@ import java.util.Set;
 @Table(name = "member_room")
 public class MemberRoom {
     private BigDecimal balance;
+
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
     @Transient
     private BigDecimal amountSpent;
+
+    @Transient
+    private String roomName;
+
+    @Transient
+    private int roomId;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "memberRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -51,4 +58,13 @@ public class MemberRoom {
         }
         return sum;
     }
+
+    public String getRoomName(){
+        return room.getRoomName();
+    }
+
+    public int getRoomId(){
+        return room.getRoomId();
+    }
+
 }
