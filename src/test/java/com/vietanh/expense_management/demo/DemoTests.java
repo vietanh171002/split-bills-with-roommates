@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 import org.assertj.core.api.Assertions;
@@ -68,12 +69,15 @@ public class DemoTests {
     @Test
     public void testIncrementsIntProperty(){
         Room room = Room.builder()
-                        .totalSpending(0)
                         .build();
         int amount = 10; 
-        room.setTotalSpending(room.getTotalSpending()+ amount);
 
         assertThat(room.getTotalSpending()).isEqualTo(10);
     }
-    
+
+    @Test
+    public void testDivision(){
+        BigDecimal x = new BigDecimal(400);
+
+    }
 }

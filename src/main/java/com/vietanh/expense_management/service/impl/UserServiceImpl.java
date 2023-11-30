@@ -5,7 +5,9 @@ import com.vietanh.expense_management.dto.request.RegisterDto;
 import com.vietanh.expense_management.dto.response.UserDto;
 import com.vietanh.expense_management.exception.ActionDeniedException;
 import com.vietanh.expense_management.exception.UserNotFoundException;
+import com.vietanh.expense_management.model.MemberRoom;
 import com.vietanh.expense_management.model.User;
+import com.vietanh.expense_management.model.enumeration.MemberRole;
 import com.vietanh.expense_management.model.enumeration.Role;
 import com.vietanh.expense_management.repository.UserRepository;
 import com.vietanh.expense_management.security.JwtService;
@@ -109,6 +111,18 @@ public class UserServiceImpl implements UserService {
         User user = getUserFromSecurity();
         UserDto userDto = mapUserToUserDto(user);
         return userDto;
+    }
+
+//edit user info
+    @Override
+    public void editUserInfo(RegisterDto editDto) {
+        User user = getUserFromSecurity();
+
+
+        //edit info
+        user.setEmail(editDto.getEmail());
+        user.setName(editDto.getName());
+        user.setPassword(passwordEncoder.encode(editDto.getPassword()));
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.vietanh.expense_management.model.enumeration.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,10 +21,12 @@ import java.util.Set;
 @IdClass(MemberRoomId.class)
 @Table(name = "member_room")
 public class MemberRoom {
-    private int balance;
-    private int spentAmount;
+    private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
+    @Transient
+    private BigDecimal amountSpent;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "memberRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -40,4 +43,12 @@ public class MemberRoom {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public BigDecimal getAmountSpent(){
+        BigDecimal sum = BigDecimal.ZERO;
+        for(Spending spending: spendings){
+            sum = sum.add(spending.getAmount());
+        }
+        return sum;
+    }
 }

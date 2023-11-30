@@ -5,6 +5,7 @@ import com.vietanh.expense_management.model.enumeration.SpendingCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -19,7 +20,7 @@ public class Spending {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int spendingId;
     private String detail;
-    private int amount;
+    private BigDecimal amount;
     private LocalDate date;
     @Enumerated(EnumType.STRING)
     private SpendingCategory category;

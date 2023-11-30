@@ -2,9 +2,11 @@ package com.vietanh.expense_management.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vietanh.expense_management.model.enumeration.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +23,41 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roomId;
     private String roomName;
+
+    @Transient
     private String owner;
-    private int totalSpending;
+    @Transient
+    private BigDecimal totalSpending;
+    @Transient
+    private int memberCount;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "room", orphanRemoval = true)
     private Set<MemberRoom> members = new HashSet<>();
+
+    public String getOwner(){
+        for(MemberRoom member : members){
+            if(member.getMemberRole() == MemberRole.OWNER){
+                return member.getUser().getName();
+            }
+        }
+        return "Owner name not found";
+
+    }
+
+    public  BigDecimal getTotalSpending(){
+        BigDecimal sum = BigDecimal.ZERO;
+        for(MemberRoom member: members){
+            for(Spending spending: member.getSpendings()){
+                sum = sum.add(spending.getAmount());
+            }
+        }
+        return sum;
+    }
+
+    public int getMemberCount(){
+        return  members.size();
+    }
+
 
 }

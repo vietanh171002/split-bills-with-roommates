@@ -5,10 +5,11 @@ import com.vietanh.expense_management.model.Room;
 import com.vietanh.expense_management.model.Spending;
 import com.vietanh.expense_management.model.enumeration.SpendingCategory;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface SpendingService {
-    Room createSpending(int RoomId, String detail, int amount, LocalDate date, SpendingCategory category);
+    Room createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category);
 
     Spending getSpending(int spendingId);
 

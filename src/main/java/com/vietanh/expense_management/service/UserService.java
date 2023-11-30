@@ -14,6 +14,8 @@ public interface UserService {
 
     UserDto getUserInfo();
 
+    void editUserInfo(RegisterDto editDto);
+
     User getUserFromSecurity();
 
     void deleteAccount();

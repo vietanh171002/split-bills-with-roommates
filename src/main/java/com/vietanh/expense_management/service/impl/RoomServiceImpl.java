@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
 @Service
@@ -42,15 +43,12 @@ public class RoomServiceImpl implements RoomService {
         Room room = Room.builder()
                 .roomName(roomName)
                 .members(new HashSet<>())
-                .owner(userName)
-                .totalSpending(0)
                 .build();
 
         roomRepository.save(room);
 
         MemberRoom memberRoom = MemberRoom.builder()
-                .balance(0)
-                .spentAmount(0)
+                .balance(BigDecimal.ZERO)
                 .room(room)
                 .user(user)
                 .memberRole(MemberRole.OWNER)
@@ -157,8 +155,7 @@ public class RoomServiceImpl implements RoomService {
         //add member
         MemberRoom addedMemberRoom = MemberRoom.builder()
                 .spendings(new HashSet<>())
-                .balance(0)
-                .spentAmount(0)
+                .balance(BigDecimal.ZERO)
                 .memberRole(MemberRole.MEMBER)
                 .room(room)
                 .user(addedUser)
@@ -215,7 +212,7 @@ public class RoomServiceImpl implements RoomService {
         return room;
     }
 
-
+//change room owner
     @Override
     public Room changeRoomOwner(int roomId, int newOwnerId) {
         //get logged-in user
@@ -248,7 +245,6 @@ public class RoomServiceImpl implements RoomService {
         //change owner
         memberRoom.setMemberRole(MemberRole.MEMBER);
         newOwnerMemberRoom.setMemberRole(MemberRole.OWNER);
-        room.setOwner(newOwner.getName());
 
         return room;
     }

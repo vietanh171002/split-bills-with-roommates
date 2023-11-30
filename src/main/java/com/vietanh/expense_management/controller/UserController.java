@@ -19,6 +19,11 @@ public class UserController {
     //register
     @PostMapping(value = "register")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
+        if (registerDto.getName().isBlank()  ||
+                registerDto.getEmail().isBlank()||
+                registerDto.getPassword().isBlank())  {
+            return ResponseEntity.badRequest().body("Please provide enough info");
+        }
         String token = userService.register(registerDto);
         return ResponseEntity.ok().body(token);
     }
@@ -35,6 +40,19 @@ public class UserController {
     public ResponseEntity<?> getUserInfo() {
         UserDto userDto = userService.getUserInfo();
         return ResponseEntity.ok().body(userDto);
+    }
+
+    //edit user info
+    @PutMapping(value = "edit-info")
+    public ResponseEntity<?> editUserInfo(@RequestBody RegisterDto editDto){
+        if (editDto.getName().isBlank()  ||
+                editDto.getEmail().isBlank()||
+                editDto.getPassword().isBlank())  {
+            return ResponseEntity.badRequest().body("Please provide enough info");
+        }
+        userService.editUserInfo(editDto);
+        UserDto userDto = userService.getUserInfo();
+        return  ResponseEntity.ok().body(userDto);
     }
 
     //logout

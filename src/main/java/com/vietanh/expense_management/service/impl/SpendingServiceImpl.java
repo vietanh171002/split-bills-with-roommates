@@ -20,6 +20,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Service
@@ -35,8 +38,12 @@ public class SpendingServiceImpl implements SpendingService {
 
     private final MemberRoomRepository memberRoomRepository;
 
+    //define the math context for division of BigDecimal
+    MathContext mathContext = new MathContext(10, RoundingMode.HALF_UP);
+
+    //add spending
     @Override
-    public Room createSpending(int RoomId, String detail, int amount, LocalDate date, SpendingCategory category) {
+    public Room createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category) {
         User user = userService.getUserFromSecurity();
 
         Room room = roomRepository.findByRoomId(RoomId).orElseThrow(
@@ -47,7 +54,6 @@ public class SpendingServiceImpl implements SpendingService {
                 () -> new MemberRoomNotFoundException("You aren't member of this room")
         );
 
-        room.setTotalSpending(room.getTotalSpending() + amount);
         roomRepository.save(room);
 
         Spending spending = Spending.builder()
@@ -61,13 +67,16 @@ public class SpendingServiceImpl implements SpendingService {
         spendingRepository.save(spending);
         memberRoom.getSpendings().add(spending);
 
-        int amountPerMember = amount / room.getMembers().size();
-        room.getMembers().forEach(mem -> mem.setBalance(mem.getBalance() - amountPerMember));
-        memberRoom.setBalance(memberRoom.getBalance() + amount);
+        //divide money
+        BigDecimal amountPerMember = amount.divide(BigDecimal.valueOf(room.getMembers().size()), mathContext);
+
+        room.getMembers().forEach(mem -> mem.setBalance(mem.getBalance().subtract(amountPerMember)));
+        memberRoom.setBalance(memberRoom.getBalance().add(amount));
         memberRoomRepository.saveAll(room.getMembers());
         return room;
     }
 
+    //edit spending
     @Override
     public Spending editSpending(int spendingId, SpendingDto editDto) {
         //get logged-in user 
@@ -89,21 +98,20 @@ public class SpendingServiceImpl implements SpendingService {
             Room room = memberRoom.getRoom();
             int memberCount = room.getMembers().size();
 
-            int oldAmountPerMember = spending.getAmount() / memberCount;
+            BigDecimal oldAmountPerMember = spending.getAmount().divide(BigDecimal.valueOf(memberCount), mathContext);
             room.getMembers().forEach(
-                    member -> member.setBalance(member.getBalance() + oldAmountPerMember)
+                    member -> member.setBalance(member.getBalance().add(oldAmountPerMember))
             );
-            memberRoom.setBalance(memberRoom.getBalance() - spending.getAmount());
+            memberRoom.setBalance(memberRoom.getBalance().subtract(spending.getAmount()) );
 
-            int newAmountPerMember = editDto.getAmount() / memberCount;
+            BigDecimal newAmountPerMember = editDto.getAmount().divide(BigDecimal.valueOf(memberCount), mathContext);
             room.getMembers().forEach(
-                    member -> member.setBalance(member.getBalance() - newAmountPerMember)
+                    member -> member.setBalance(member.getBalance().subtract(newAmountPerMember))
             );
 
-            memberRoom.setBalance(memberRoom.getBalance() + editDto.getAmount());
+            memberRoom.setBalance(memberRoom.getBalance().add(editDto.getAmount()));
 
-            //change room's totalSpending
-            room.setTotalSpending(room.getTotalSpending() - spending.getAmount() + editDto.getAmount());
+
         }
 
         //edit spending 
@@ -163,13 +171,12 @@ public class SpendingServiceImpl implements SpendingService {
         //recalculate balances of members and totalSpending because of deletion of spending
         int memberCount = room.getMembers().size();
 
-        int oldAmountPerMember = spending.getAmount() / memberCount;
+        BigDecimal oldAmountPerMember = spending.getAmount().divide(BigDecimal.valueOf(memberCount), mathContext);
         room.getMembers().forEach(
-                member -> member.setBalance(member.getBalance() + oldAmountPerMember)
+                member -> member.setBalance(member.getBalance().add(oldAmountPerMember))
         );
-        memberRoom.setBalance(memberRoom.getBalance() - spending.getAmount());
+        memberRoom.setBalance(memberRoom.getBalance().subtract(spending.getAmount()));
 
-        room.setTotalSpending(room.getTotalSpending() - spending.getAmount());
 
         //delete spending
         spendingRepository.delete(spending);
