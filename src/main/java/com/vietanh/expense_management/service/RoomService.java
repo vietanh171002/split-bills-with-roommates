@@ -5,17 +5,19 @@ import com.vietanh.expense_management.model.Room;
 public interface RoomService {
     Room createRoom(String roomName);
 
-    Room editRoomName(int roomId, String newRoomName);
+    void editRoomName(int roomId, String newRoomName);
 
     void deleteRoom(int roomId);
 
-    Room addUserToRoom(int roomId, int addedUserId);
+    void addUserToRoom(int roomId, int addedUserId);
+
+    void addUserToRoomByEmail(int RoomId, String addedUserEmail);
 
     Room getRoomInfo(int roomId);
 
-    Room removeUserFromRoom(int roomId, int removedUserId);
+    void removeUserFromRoom(int roomId, int removedUserId);
 
-    Room changeRoomOwner(int roomId, int newOwnerId);
+    void changeRoomOwner(int roomId, int newOwnerId);
 
     void leaveRoom(int roomId);
 }

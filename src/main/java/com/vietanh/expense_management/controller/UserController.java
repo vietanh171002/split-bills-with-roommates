@@ -23,7 +23,7 @@ public class UserController {
         if (registerDto.getName().isBlank()  ||
                 registerDto.getEmail().isBlank()||
                 registerDto.getPassword().isBlank())  {
-            return ResponseEntity.badRequest().body("Please provide enough info");
+            return ResponseEntity.badRequest().body("Please provide enough information");
         }
         String token = userService.register(registerDto);
         TokenDto tokenDto = new TokenDto(token);
@@ -51,7 +51,7 @@ public class UserController {
         if (editDto.getName().isBlank()  ||
                 editDto.getEmail().isBlank()||
                 editDto.getPassword().isBlank())  {
-            return ResponseEntity.badRequest().body("Please provide enough info");
+            return ResponseEntity.badRequest().body("Please provide enough information");
         }
         userService.editUserInfo(editDto);
         UserDto userDto = userService.getUserInfo();

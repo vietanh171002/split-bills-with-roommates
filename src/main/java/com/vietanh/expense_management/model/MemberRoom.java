@@ -26,14 +26,23 @@ public class MemberRoom {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
-    @Transient
-    private BigDecimal amountSpent;
+    //room info
 
     @Transient
     private String roomName;
 
     @Transient
     private int roomId;
+
+    //member info
+    @Transient
+    private String memberName;
+
+    @Transient
+    private int userId;
+
+    @Transient
+    private BigDecimal amountSpent;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "memberRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -65,6 +74,14 @@ public class MemberRoom {
 
     public int getRoomId(){
         return room.getRoomId();
+    }
+
+    public String getMemberName(){
+        return user.getName();
+    }
+
+    public int getUserId(){
+        return user.getId();
     }
 
 }

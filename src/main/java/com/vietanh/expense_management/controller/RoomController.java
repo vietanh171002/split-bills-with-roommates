@@ -22,6 +22,9 @@ public class RoomController {
     //create room
     @PostMapping(value = "create")
     public ResponseEntity<?> createRoom(@RequestBody CreateRoomDto createRoomDto) {
+        if(createRoomDto.getRoomName().isBlank()){
+            return ResponseEntity.badRequest().body("Please provide room name");
+        }
         String roomName = createRoomDto.getRoomName();
         Room room = roomService.createRoom(roomName);
         return ResponseEntity.ok().body(room);
@@ -30,9 +33,12 @@ public class RoomController {
     //edit room name
     @PutMapping(value = "/{roomId}/edit-room-name")
     public ResponseEntity<?> editRoomName(@PathVariable int roomId, @RequestBody CreateRoomDto createRoomDto) {
+        if( createRoomDto == null || createRoomDto.getRoomName() == null || createRoomDto.getRoomName().isBlank()){
+            return ResponseEntity.badRequest().body("Please provide new room name");
+        }
         String newRoomName = createRoomDto.getRoomName();
-        Room room = roomService.editRoomName(roomId, newRoomName);
-        return ResponseEntity.ok().body(room);
+        roomService.editRoomName(roomId, newRoomName);
+        return ResponseEntity.noContent().build();
     }
 
     //get room info 
@@ -42,32 +48,43 @@ public class RoomController {
         return ResponseEntity.ok().body(room);
     }
 
-    //add member to room
+    //add member to room by id
     @PostMapping(value = "/{roomId}/add-member/{addedUserId}")
     public ResponseEntity<?> addUserToRoom(@PathVariable int roomId, @PathVariable int addedUserId) {
-        Room room = roomService.addUserToRoom(roomId, addedUserId);
-        return ResponseEntity.ok().body(room);
+        roomService.addUserToRoom(roomId, addedUserId);
+        return ResponseEntity.noContent().build();
     }
+
+    //add member to room by email
+    @PostMapping(value = "/{roomId}/add-member-by-email/{addedUserEmail}")
+    public ResponseEntity<?> addUserToRoomByEmail(@PathVariable int roomId, @PathVariable String addedUserEmail) {
+        if (addedUserEmail == null || addedUserEmail.isBlank()) {
+            return ResponseEntity.badRequest().body("Please provide enough information");
+        }
+        roomService.addUserToRoomByEmail(roomId, addedUserEmail);
+        return ResponseEntity.noContent().build();
+    }
+
 
     //remove member from room 
     @DeleteMapping(value = "/{roomId}/remove-member/{removedMemberId}")
     public ResponseEntity<?> removeMemberFromRoom(@PathVariable int roomId, @PathVariable int removedMemberId) {
-        Room room = roomService.removeUserFromRoom(roomId, removedMemberId);
-        return ResponseEntity.ok().body(room);
+        roomService.removeUserFromRoom(roomId, removedMemberId);
+        return ResponseEntity.noContent().build();
     }
 
     //change room owner
     @PutMapping(value = "/{roomId}/change-room-owner/{newOwnerId}")
     public ResponseEntity<?> changeRoomOwner(@PathVariable int roomId, @PathVariable int newOwnerId) {
-        Room room = roomService.changeRoomOwner(roomId, newOwnerId);
-        return ResponseEntity.ok().body(room);
+        roomService.changeRoomOwner(roomId, newOwnerId);
+        return ResponseEntity.noContent().build();
     }
 
     //delete room
     @DeleteMapping(value = "/{roomId}/delete")
     public ResponseEntity<?> deleteRoom(@PathVariable int roomId) {
         roomService.deleteRoom(roomId);
-        return ResponseEntity.ok().body("Delete room successfully");
+        return ResponseEntity.noContent().build();
     }
 
     //leave room

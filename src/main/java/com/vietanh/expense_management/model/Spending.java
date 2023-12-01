@@ -22,6 +22,15 @@ public class Spending {
     private String detail;
     private BigDecimal amount;
     private LocalDate date;
+
+    //spender info
+    @Transient
+    private String spender;
+    public  String getSpender(){
+        return memberRoom.getUser().getName();
+    }
+
+
     @Enumerated(EnumType.STRING)
     private SpendingCategory category;
 

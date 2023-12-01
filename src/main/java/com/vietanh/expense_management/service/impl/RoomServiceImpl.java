@@ -65,7 +65,7 @@ public class RoomServiceImpl implements RoomService {
 
     //edit room name
     @Override
-    public Room editRoomName(int roomId, String newRoomName) {
+    public void editRoomName(int roomId, String newRoomName) {
         //get logged-in user 
         User user = userService.getUserFromSecurity();
 
@@ -85,7 +85,6 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomName(newRoomName);
         // roomRepository.save(room);
 
-        return room;
     }
 
     //delete room
@@ -127,9 +126,10 @@ public class RoomServiceImpl implements RoomService {
         return room;
     }
 
+    //add user to room by id
     // Only members of room could add user to that room
     @Override
-    public Room addUserToRoom(int roomId, int addedUserId) {
+    public void addUserToRoom(int roomId, int addedUserId) {
         //get logged-in user
         User user = userService.getUserFromSecurity();
 
@@ -166,12 +166,20 @@ public class RoomServiceImpl implements RoomService {
         room.getMembers().add(addedMemberRoom);
         addedUser.getRooms().add(addedMemberRoom);
 
-        return room;
+    }
+
+    //add user to room by email
+    @Override
+    public void addUserToRoomByEmail(int RoomId, String addedUserEmail) {
+        User addedUser = userRepository.findByEmail(addedUserEmail).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+        addUserToRoom(RoomId, addedUser.getId());
     }
 
     // only room owner could remove member
     @Override
-    public Room removeUserFromRoom(int roomId, int removedUserId) {
+    public void removeUserFromRoom(int roomId, int removedUserId) {
         //get logged-in user
         User user = userService.getUserFromSecurity();
 
@@ -209,12 +217,11 @@ public class RoomServiceImpl implements RoomService {
         //finally delete removedMemberRoom
         memberRoomRepository.delete(removedMemberRoom);
 
-        return room;
     }
 
 //change room owner
     @Override
-    public Room changeRoomOwner(int roomId, int newOwnerId) {
+    public void changeRoomOwner(int roomId, int newOwnerId) {
         //get logged-in user
         User user = userService.getUserFromSecurity();
 
@@ -246,7 +253,6 @@ public class RoomServiceImpl implements RoomService {
         memberRoom.setMemberRole(MemberRole.MEMBER);
         newOwnerMemberRoom.setMemberRole(MemberRole.OWNER);
 
-        return room;
     }
 
     @Override
