@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface SpendingService {
-    Room createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category);
+    void createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category);
 
     Spending getSpending(int spendingId);
 
-    Spending editSpending(int spendingId, SpendingDto editDto);
+    void editSpending(int spendingId, SpendingDto editDto);
 
     void deleteSpending(int spendingId);
 }

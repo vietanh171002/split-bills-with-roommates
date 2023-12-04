@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.HashSet;
 
 @Service
@@ -32,6 +34,10 @@ public class RoomServiceImpl implements RoomService {
     private final UserRepository userRepository;
 
     private final UserService userService;
+
+    //math context
+    MathContext mathContext = new MathContext(10, RoundingMode.HALF_UP);
+
 
     //create room
     @Override
@@ -177,6 +183,7 @@ public class RoomServiceImpl implements RoomService {
         addUserToRoom(RoomId, addedUser.getId());
     }
 
+    //remove member
     // only room owner could remove member
     @Override
     public void removeUserFromRoom(int roomId, int removedUserId) {
@@ -213,9 +220,15 @@ public class RoomServiceImpl implements RoomService {
                 () -> new MemberRoomNotFoundException("The member you want to remove aren't member of this room")
         );
 
+        //remove
+        room.getMembers().remove(removedMemberRoom);
+
+        //recalculate balances
+        recalculateBalances(room);
 
         //finally delete removedMemberRoom
         memberRoomRepository.delete(removedMemberRoom);
+
 
     }
 
@@ -255,6 +268,7 @@ public class RoomServiceImpl implements RoomService {
 
     }
 
+    //leave room
     @Override
     public void leaveRoom(int roomId) {
         //get logged-in user
@@ -275,7 +289,34 @@ public class RoomServiceImpl implements RoomService {
             throw new ActionDeniedException("You are room owner, so you couldn't leave room");
         }
 
+        //member have negative balance can't leave room
+        if(memberRoom.getBalance().compareTo(BigDecimal.ZERO) < 0){
+            throw new ActionDeniedException("Your balance is negative, so you can't leave room ");
+        }
+
+        //remove memberRoom
+        room.getMembers().remove(memberRoom);
+
+        //recalculate balances
+        recalculateBalances(room);
+
         //do leave room: delete memberRoom, cascade all spending of memberRoom get deleted
         memberRoomRepository.delete(memberRoom);
+    }
+
+    private void recalculateBalances(Room room){
+        BigDecimal totalBalance = BigDecimal.ZERO;
+        for (MemberRoom mem : room.getMembers()) {
+            totalBalance = totalBalance.add(mem.getBalance());
+        }
+
+        // Calculate the adjustment per member
+        BigDecimal adjustmentPerMember = totalBalance.divide(BigDecimal.valueOf(room.getMemberCount()), mathContext);
+
+        // Update the balances for each member
+        for (MemberRoom mem : room.getMembers()) {
+            BigDecimal newBalance = mem.getBalance().subtract(adjustmentPerMember);
+            mem.setBalance(newBalance);
+        }
     }
 }

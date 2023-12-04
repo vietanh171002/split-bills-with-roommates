@@ -18,16 +18,17 @@ public class SpendingController {
     //create spending
     @PostMapping(value = "create/{roomId}")
     public ResponseEntity<?> createSpending(@RequestBody SpendingDto spendingDto, @PathVariable int roomId) {
-        Room room = spendingService.createSpending(
+//        if(spendingDto.getDetail().isBlank() || spendingDto.getDetail().isBlank() )
+        spendingService.createSpending(
                 roomId, spendingDto.getDetail(), spendingDto.getAmount(), spendingDto.getDate(), spendingDto.getCategory());
-        return ResponseEntity.ok().body(room);
+        return ResponseEntity.noContent().build();
     }
 
     //edit spending
     @PutMapping(value = "/{spendingId}/edit")
     public ResponseEntity<?> editSpending(@PathVariable int spendingId, @RequestBody SpendingDto editDto) {
-        Spending spending = spendingService.editSpending(spendingId, editDto);
-        return ResponseEntity.ok().body(spending);
+      spendingService.editSpending(spendingId, editDto);
+        return ResponseEntity.noContent().build();
     }
 
     //get spending

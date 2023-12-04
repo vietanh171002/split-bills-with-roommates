@@ -26,10 +26,15 @@ public class Spending {
     //spender info
     @Transient
     private String spender;
+    @Transient
+    private int spenderId;
     public  String getSpender(){
         return memberRoom.getUser().getName();
     }
 
+    public int getSpenderId() {
+        return  memberRoom.getUser().getId();
+    }
 
     @Enumerated(EnumType.STRING)
     private SpendingCategory category;

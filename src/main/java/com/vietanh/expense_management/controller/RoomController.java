@@ -91,8 +91,7 @@ public class RoomController {
     @PutMapping(value = "/{roomId}/leave")
     public ResponseEntity<?> leaveRoom(@PathVariable int roomId) {
         roomService.leaveRoom(roomId);
-        UserDto userDto = userService.getUserInfo();
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.noContent().build();
     }
 }
 

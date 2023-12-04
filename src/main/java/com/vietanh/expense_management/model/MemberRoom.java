@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @IdClass(MemberRoomId.class)
 @Table(name = "member_room")
-public class MemberRoom {
+public class     MemberRoom {
     private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)

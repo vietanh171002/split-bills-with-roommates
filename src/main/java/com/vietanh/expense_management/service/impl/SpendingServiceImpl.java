@@ -43,11 +43,11 @@ public class SpendingServiceImpl implements SpendingService {
 
     //add spending
     @Override
-    public Room createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category) {
+    public void createSpending(int RoomId, String detail, BigDecimal amount, LocalDate date, SpendingCategory category) {
         User user = userService.getUserFromSecurity();
 
         Room room = roomRepository.findByRoomId(RoomId).orElseThrow(
-                RoomNotFoundException::new
+                () -> new RoomNotFoundException("Room not found")
         );
 
         MemberRoom memberRoom = memberRoomRepository.findByRoomAndUser(room, user).orElseThrow(
@@ -73,12 +73,11 @@ public class SpendingServiceImpl implements SpendingService {
         room.getMembers().forEach(mem -> mem.setBalance(mem.getBalance().subtract(amountPerMember)));
         memberRoom.setBalance(memberRoom.getBalance().add(amount));
         memberRoomRepository.saveAll(room.getMembers());
-        return room;
     }
 
     //edit spending
     @Override
-    public Spending editSpending(int spendingId, SpendingDto editDto) {
+    public void editSpending(int spendingId, SpendingDto editDto) {
         //get logged-in user 
         User user = userService.getUserFromSecurity();
 
@@ -120,7 +119,6 @@ public class SpendingServiceImpl implements SpendingService {
         spending.setDate(editDto.getDate());
         spending.setDetail(editDto.getDetail());
 
-        return spending;
     }
 
     //only member of the room containing the spending could get that spending
