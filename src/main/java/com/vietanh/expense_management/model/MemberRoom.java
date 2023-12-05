@@ -27,7 +27,6 @@ public class     MemberRoom {
     private MemberRole memberRole;
 
     //room info
-
     @Transient
     private String roomName;
 

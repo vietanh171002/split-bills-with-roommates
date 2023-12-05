@@ -42,7 +42,7 @@ public class SpendingController {
     @DeleteMapping(value = "/{spendingId}/delete-spending")
     public ResponseEntity<?> deleteSpending(@PathVariable int spendingId) {
         spendingService.deleteSpending(spendingId);
-        return ResponseEntity.ok().body("Delete spending successfully");
+        return ResponseEntity.noContent().build();
     }
 
 }

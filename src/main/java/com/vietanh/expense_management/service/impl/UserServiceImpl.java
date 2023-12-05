@@ -1,7 +1,10 @@
 package com.vietanh.expense_management.service.impl;
 
+import com.vietanh.expense_management.dto.request.ChangePasswordDto;
+import com.vietanh.expense_management.dto.request.ChangeUserInfoDto;
 import com.vietanh.expense_management.dto.request.LoginDto;
 import com.vietanh.expense_management.dto.request.RegisterDto;
+import com.vietanh.expense_management.dto.response.TokenDto;
 import com.vietanh.expense_management.dto.response.UserDto;
 import com.vietanh.expense_management.exception.ActionDeniedException;
 import com.vietanh.expense_management.exception.UserNotFoundException;
@@ -59,8 +62,9 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    //login
     @Override
-    public String login(LoginDto loginDto) {
+    public TokenDto login(LoginDto loginDto) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -71,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtService.generateToken(loginDto.getEmail());
 
-        return token;
+        return new TokenDto(token);
     }
 
     @Override
@@ -113,21 +117,29 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-//edit user info
+    //edit user info
     @Override
-    public void editUserInfo(RegisterDto editDto) {
+    public  void editUserInfo(ChangeUserInfoDto editDto) {
         User user = getUserFromSecurity();
 
-
         //edit info
-        user.setEmail(editDto.getEmail());
-        user.setName(editDto.getName());
-        user.setPassword(passwordEncoder.encode(editDto.getPassword()));
+        user.setName(editDto.getNewName());
+        user.setEmail(editDto.getNewEmail());
     }
 
     @Override
     public void logout() {
         SecurityContextHolder.clearContext();
+    }
+
+    //change password
+    @Override
+    public void changePassword(ChangePasswordDto dto){
+        User user=getUserFromSecurity();
+        if(!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())){
+            throw new ActionDeniedException("Password incorrect");
+        };
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
     }
 
 }

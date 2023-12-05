@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     //exception thrown by Security when login fails
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email of password is incorrect");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is incorrect");
     }
 
     @ExceptionHandler(Exception.class)
