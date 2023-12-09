@@ -62,10 +62,12 @@ public class SpendingServiceImpl implements SpendingService {
                 .date(date)
                 .category(category)
                 .memberRoom(memberRoom)
+//                .room(room)
                 .build();
 
         spendingRepository.save(spending);
         memberRoom.getSpendings().add(spending);
+//        room.getExpenses().add(spending);
 
         //divide money
         BigDecimal amountPerMember = amount.divide(BigDecimal.valueOf(room.getMembers().size()), mathContext);

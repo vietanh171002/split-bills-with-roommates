@@ -39,12 +39,16 @@ public class Room {
     @Transient
     private int memberCount;
 
-    @Transient
-    private List<Spending> expenses;
+//    @Transient
+//    private List<Spending> expenses;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "room", orphanRemoval = true)
     private Set<MemberRoom> members = new HashSet<>();
+
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "room", orphanRemoval = true)
+//    private Set<Spending> expenses = new HashSet<>();
 
     public String getOwner(){
         for(MemberRoom member : members){
@@ -70,18 +74,18 @@ public class Room {
         return  members.size();
     }
 
-    public List<Spending> getExpenses(){
-        List<Spending> temp =  members.stream()
-                .flatMap(memberRoom -> memberRoom.getSpendings().stream())
-                .collect(Collectors.toList());
-
-        Comparator<Spending> descendingOrderComparator = Comparator.comparingLong(Spending::getSpendingId).reversed();
-
-        // Using Collections.sort() for an existing list
-        Collections.sort(temp, descendingOrderComparator);
-
-        return temp;
-    }
+//    public List<Spending> getExpenses(){
+//        List<Spending> temp =  members.stream()
+//                .flatMap(memberRoom -> memberRoom.getSpendings().stream())
+//                .collect(Collectors.toList());
+//
+//        Comparator<Spending> descendingOrderComparator = Comparator.comparingLong(Spending::getSpendingId).reversed();
+//
+//        // Using Collections.sort() for an existing list
+//        Collections.sort(temp, descendingOrderComparator);
+//
+//        return temp;
+//    }
 
     public int getOwnerId() {
         for(MemberRoom member : members){

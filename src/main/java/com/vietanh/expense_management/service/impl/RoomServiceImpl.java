@@ -49,6 +49,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = Room.builder()
                 .roomName(roomName)
                 .members(new HashSet<>())
+//                .expenses(new HashSet<>())
                 .build();
 
         roomRepository.save(room);

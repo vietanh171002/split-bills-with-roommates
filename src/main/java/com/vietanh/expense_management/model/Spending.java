@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -42,4 +43,13 @@ public class Spending {
     @JsonBackReference
     @ManyToOne
     private MemberRoom memberRoom;
+
+//    @JsonBackReference
+//    @ManyToOne
+//    private Room room;
+//
+//    @JsonBackReference
+//    @ManyToOne
+//    private User user;
+
 }
