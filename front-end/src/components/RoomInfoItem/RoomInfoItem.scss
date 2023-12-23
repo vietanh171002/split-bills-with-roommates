@@ -1,0 +1,52 @@
+.room-info-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    // justify-content: center;
+    background: rgb(125, 156, 187);
+    width: 700px;
+    padding-bottom: 10px;
+    // border-radius: 5px;
+    position: relative;
+    margin: 8px 0;
+    .icon {
+        position: absolute;
+        left: 20px;
+        font-size: 50px;
+        display: flex;
+        align-items: center;
+        margin-right: 30px;
+    }
+    .info {
+        margin-left: 150px;
+        padding: 5px 0;
+        font-size: larger;
+        .room-name {
+            h2 {
+                margin: 15px 0;
+            }
+        }
+        .owner-info {
+            .owner {
+                margin-right: 10px;
+            }
+        }
+        .total-info {
+            display: flex;
+            align-items: center;
+            .total {
+                margin-right: 10px;
+            }
+        }
+    }
+    .button {
+        height: 40px;
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        right: 25px;
+        .add-spending {
+            margin-right: 5px;
+        }
+    }
+}
